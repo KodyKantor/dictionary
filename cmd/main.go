@@ -9,7 +9,7 @@ import (
 
 func main() {
 	dict := dictionary.Dictionary{}
-	dict.Open("memdb") // memdb for development.
+	dict.Open("memmap") // memory storage for development.
 
 	http.HandleFunc("/definition", dict.HandleDefinition)
 	log.Fatal(http.ListenAndServe(":8080", nil))

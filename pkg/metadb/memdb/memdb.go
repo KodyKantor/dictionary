@@ -36,17 +36,13 @@ func (m *MemDB) InitDB() {
 	}
 
 	m.db = db
-
-	m.PutDefinition(&metadb.Def{
-		Word:       "prometheus",
-		Definition: "the beginning",
-	})
 }
 
-func (m *MemDB) PutDefinition(def *metadb.Def) {
+func (m *MemDB) PutDefinition(def *metadb.Def) error {
 	txn := m.db.Txn(true)
 	txn.Insert(m.dictTable, def)
 	txn.Commit()
+	return nil
 }
 
 func (m *MemDB) GetDefinition(word string) (*metadb.Def, error) {

@@ -8,6 +8,7 @@ import (
 
 	"github.com/kodykantor/dictionary/pkg/metadb"
 	"github.com/kodykantor/dictionary/pkg/metadb/memdb"
+	"github.com/kodykantor/dictionary/pkg/metadb/memmap"
 )
 
 // Dictionary stores definitions of words. These definitions can be overwritten or retrieved.
@@ -78,10 +79,18 @@ func (d *Dictionary) Open(backend string) {
 		case "memdb":
 			m := memdb.MemDB{}
 			d.db = &m
+		case "memmap":
+			m := memmap.MemMap{}
+			d.db = &m
 		default:
 			panic("unknown db type")
 		}
 
 		d.db.InitDB()
+
+		d.db.PutDefinition(&metadb.Def{
+			Word:       "prometheus",
+			Definition: "the beginning",
+		})
 	}
 }

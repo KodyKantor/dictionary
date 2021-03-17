@@ -3,7 +3,7 @@ package metadb
 // XXX db operations should all be able to return errors.
 type MetaDB interface {
 	InitDB()                                 // Initialize the database.
-	PutDefinition(def *Def)                  // Insert the given definition into the database.
+	PutDefinition(def *Def) error            // Insert the given definition into the database.
 	GetDefinition(word string) (*Def, error) // Get the given word's definition from the database.
 }
 
