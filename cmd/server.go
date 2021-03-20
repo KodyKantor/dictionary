@@ -34,7 +34,11 @@ func (ds *DictionaryServer) Synopsis() string {
 
 func (ds *DictionaryServer) Run(args []string) int {
 	dict := dictionary.Dictionary{}
-	dict.Open(ds.dbType)
+	err := dict.Open(ds.dbType)
+	if err != nil {
+		log.Println("error running server:", err)
+		return -1
+	}
 
 	http.HandleFunc(definitionPath, dict.HandleDefinition)
 

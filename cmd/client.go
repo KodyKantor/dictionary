@@ -18,5 +18,6 @@ func (dc *DictionaryClient) Synopsis() string {
 }
 
 func (dc *DictionaryClient) Run(args []string) int {
+
 	return 0
 }

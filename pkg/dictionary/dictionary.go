@@ -2,6 +2,7 @@ package dictionary
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -9,6 +10,11 @@ import (
 	"github.com/kodykantor/dictionary/pkg/metadb"
 	"github.com/kodykantor/dictionary/pkg/metadb/memdb"
 	"github.com/kodykantor/dictionary/pkg/metadb/memmap"
+)
+
+var (
+	ErrAlreadyOpen   = errors.New("db is already open")
+	ErrUnknownDBType = errors.New("unknown db type")
 )
 
 // Dictionary stores definitions of words. These definitions can be overwritten or retrieved.
@@ -71,7 +77,7 @@ func (d *Dictionary) HandleDefinition(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func (d *Dictionary) Open(backend string) {
+func (d *Dictionary) Open(backend string) error {
 	// Set up the database if it's not already configured.
 	// XXX implement a durable metadata backend.
 	if d.db == nil {
@@ -83,7 +89,7 @@ func (d *Dictionary) Open(backend string) {
 			m := memmap.MemMap{}
 			d.db = &m
 		default:
-			panic("unknown db type")
+			return ErrUnknownDBType
 		}
 
 		d.db.InitDB()
@@ -92,5 +98,8 @@ func (d *Dictionary) Open(backend string) {
 			Word:       "prometheus",
 			Definition: "the beginning",
 		})
+	} else {
+		return ErrAlreadyOpen
 	}
+	return nil
 }

@@ -13,7 +13,7 @@ type MemDB struct {
 func (m *MemDB) InitDB() {
 	m.dictTable = "dictionary"
 
-	// Create the DB schema
+	// Define the DB schema
 	schema := &memdb.DBSchema{
 		Tables: map[string]*memdb.TableSchema{
 			m.dictTable: &memdb.TableSchema{
