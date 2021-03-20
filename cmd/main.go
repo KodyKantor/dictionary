@@ -2,15 +2,45 @@ package main
 
 import (
 	"log"
-	"net/http"
+	"os"
 
-	"github.com/kodykantor/dictionary/pkg/dictionary"
+	"github.com/mitchellh/cli"
 )
 
-func main() {
-	dict := dictionary.Dictionary{}
-	dict.Open("memmap") // memory storage for development.
+const (
+	appVersion = "1.0.0"
+	appName    = "dictionary"
 
-	http.HandleFunc("/definition", dict.HandleDefinition)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	defaultPort = "8080"
+	defaultDB   = "memmap"
+)
+
+func serverFactory() (cli.Command, error) {
+	return &DictionaryServer{
+		port:   defaultPort,
+		dbType: defaultDB,
+	}, nil
+}
+
+func clientFactory() (cli.Command, error) {
+	return &DictionaryClient{
+		remotePort: defaultPort,
+	}, nil
+}
+
+func main() {
+
+	c := cli.NewCLI(appName, appVersion)
+	c.Args = os.Args[1:]
+	c.Commands = map[string]cli.CommandFactory{
+		"server": serverFactory,
+		"client": clientFactory,
+	}
+
+	exitStatus, err := c.Run()
+	if err != nil {
+		log.Println("error running command:", err)
+	}
+
+	os.Exit(exitStatus)
 }
