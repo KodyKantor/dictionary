@@ -43,7 +43,7 @@ func (ds *DictionaryServer) Run(args []string) int {
 	http.HandleFunc(definitionPath, dict.HandleDefinition)
 
 	fmt.Printf("starting server on port %d...\n", ds.port)
-	err := http.ListenAndServe(fmt.Sprintf(":%s", ds.port), nil)
+	err = http.ListenAndServe(fmt.Sprintf(":%s", ds.port), nil)
 	if err != nil {
 		log.Println("error running server:", err)
 	}
